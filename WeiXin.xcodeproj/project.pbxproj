@@ -134,8 +134,6 @@
 		515BDD911AF45EC200B408DC /* build-libidn.sh in Resources */ = {isa = PBXBuildFile; fileRef = 515BDD0F1AF45EC100B408DC /* build-libidn.sh */; };
 		515BDD921AF45EC200B408DC /* libidn.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 515BDD111AF45EC100B408DC /* libidn.a */; };
 		515BDD931AF45EC200B408DC /* XMPPManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 515BDD161AF45EC200B408DC /* XMPPManager.m */; };
-		515BDD951AF45FE800B408DC /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 515BDD941AF45FE800B408DC /* libxml2.dylib */; };
-		515BDD971AF4601400B408DC /* libresolv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 515BDD961AF4601400B408DC /* libresolv.dylib */; };
 		515BDE201AF4F5F100B408DC /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 515BDE1F1AF4F5F100B408DC /* UIKit.framework */; };
 		515BDE221AF4F5FA00B408DC /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 515BDE211AF4F5FA00B408DC /* CoreGraphics.framework */; };
 		51BCAF0D1AECCD1C008B2C78 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 51BCAF0C1AECCD1C008B2C78 /* main.m */; };
@@ -225,6 +223,8 @@
 		E8C11EF51C63036400D12B67 /* voice1.png in Resources */ = {isa = PBXBuildFile; fileRef = E8C11EB71C63036400D12B67 /* voice1.png */; };
 		E8C11EF61C63036400D12B67 /* voice2.png in Resources */ = {isa = PBXBuildFile; fileRef = E8C11EB81C63036400D12B67 /* voice2.png */; };
 		E8C11EF71C63036400D12B67 /* voice3.png in Resources */ = {isa = PBXBuildFile; fileRef = E8C11EB91C63036400D12B67 /* voice3.png */; };
+		E8C11EFD1C63094B00D12B67 /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E8C11EFC1C63094B00D12B67 /* libxml2.tbd */; };
+		E8C11EFF1C63095300D12B67 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E8C11EFE1C63095300D12B67 /* libresolv.tbd */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -615,6 +615,9 @@
 		E8C11EB71C63036400D12B67 /* voice1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = voice1.png; sourceTree = "<group>"; };
 		E8C11EB81C63036400D12B67 /* voice2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = voice2.png; sourceTree = "<group>"; };
 		E8C11EB91C63036400D12B67 /* voice3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = voice3.png; sourceTree = "<group>"; };
+		E8C11EF81C6304B600D12B67 /* XMPPTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPTest.m; sourceTree = "<group>"; };
+		E8C11EFC1C63094B00D12B67 /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
+		E8C11EFE1C63095300D12B67 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -622,10 +625,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E8C11EFF1C63095300D12B67 /* libresolv.tbd in Frameworks */,
+				E8C11EFD1C63094B00D12B67 /* libxml2.tbd in Frameworks */,
 				515BDE221AF4F5FA00B408DC /* CoreGraphics.framework in Frameworks */,
 				515BDE201AF4F5F100B408DC /* UIKit.framework in Frameworks */,
-				515BDD971AF4601400B408DC /* libresolv.dylib in Frameworks */,
-				515BDD951AF45FE800B408DC /* libxml2.dylib in Frameworks */,
 				515BDD921AF45EC200B408DC /* libidn.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1388,6 +1391,8 @@
 		51BCAEFE1AECCD1C008B2C78 = {
 			isa = PBXGroup;
 			children = (
+				E8C11EFE1C63095300D12B67 /* libresolv.tbd */,
+				E8C11EFC1C63094B00D12B67 /* libxml2.tbd */,
 				515BDE211AF4F5FA00B408DC /* CoreGraphics.framework */,
 				515BDE1F1AF4F5F100B408DC /* UIKit.framework */,
 				515BDD961AF4601400B408DC /* libresolv.dylib */,
@@ -1451,6 +1456,7 @@
 			isa = PBXGroup;
 			children = (
 				51BCAF261AECCD1D008B2C78 /* WeiXinTests.m */,
+				E8C11EF81C6304B600D12B67 /* XMPPTest.m */,
 				51BCAF241AECCD1D008B2C78 /* Supporting Files */,
 			);
 			path = WeiXinTests;

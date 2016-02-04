@@ -9,8 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "XMPPFramework.h"
 
-#define kHostName   (@"openfire.baoluo.dev")
-#define kServerName (@"127.0.0.1")
+#define kHostName   (@"10.211.55.10")
+#define kServerName (@"10.211.55.10")
 #define kHostPort   (5222)
 
 #define PRETTY_LOG(s) NSLog(@"---------------------------------------------\n%@\n---------------------------------------------", s);
