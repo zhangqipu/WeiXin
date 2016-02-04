@@ -150,6 +150,8 @@
 		51BCAF6A1AECEAA3008B2C78 /* MeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 51BCAF691AECEAA3008B2C78 /* MeViewController.m */; };
 		51BCAF9B1AED1561008B2C78 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 51BCAF9A1AED1561008B2C78 /* Default.png */; };
 		51BCAF9F1AED1720008B2C78 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 51BCAF9E1AED1720008B2C78 /* icon.png */; };
+		E82B1F151C63460D00147E5B /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E82B1F141C63460D00147E5B /* libxml2.tbd */; };
+		E82B1F171C63462200147E5B /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E82B1F161C63462200147E5B /* libresolv.tbd */; };
 		E8C11E701C63021300D12B67 /* ChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E8C11E5A1C63021300D12B67 /* ChatViewController.m */; };
 		E8C11E711C63021300D12B67 /* QPChatAudioCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E8C11E5C1C63021300D12B67 /* QPChatAudioCell.m */; };
 		E8C11E721C63021300D12B67 /* QPChatBaseCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E8C11E5E1C63021300D12B67 /* QPChatBaseCell.m */; };
@@ -223,8 +225,6 @@
 		E8C11EF51C63036400D12B67 /* voice1.png in Resources */ = {isa = PBXBuildFile; fileRef = E8C11EB71C63036400D12B67 /* voice1.png */; };
 		E8C11EF61C63036400D12B67 /* voice2.png in Resources */ = {isa = PBXBuildFile; fileRef = E8C11EB81C63036400D12B67 /* voice2.png */; };
 		E8C11EF71C63036400D12B67 /* voice3.png in Resources */ = {isa = PBXBuildFile; fileRef = E8C11EB91C63036400D12B67 /* voice3.png */; };
-		E8C11EFD1C63094B00D12B67 /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E8C11EFC1C63094B00D12B67 /* libxml2.tbd */; };
-		E8C11EFF1C63095300D12B67 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E8C11EFE1C63095300D12B67 /* libresolv.tbd */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -500,8 +500,6 @@
 		515BDD131AF45EC200B408DC /* XMPPFramework.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPFramework.h; sourceTree = "<group>"; };
 		515BDD151AF45EC200B408DC /* XMPPManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPManager.h; sourceTree = "<group>"; };
 		515BDD161AF45EC200B408DC /* XMPPManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPManager.m; sourceTree = "<group>"; };
-		515BDD941AF45FE800B408DC /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
-		515BDD961AF4601400B408DC /* libresolv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libresolv.dylib; path = usr/lib/libresolv.dylib; sourceTree = SDKROOT; };
 		515BDE1F1AF4F5F100B408DC /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		515BDE211AF4F5FA00B408DC /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		5192F4871AFE4F8400EC1B8B /* Common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Common.h; path = Resource/Common.h; sourceTree = "<group>"; };
@@ -530,6 +528,8 @@
 		51BCAF691AECEAA3008B2C78 /* MeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MeViewController.m; sourceTree = "<group>"; };
 		51BCAF9A1AED1561008B2C78 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		51BCAF9E1AED1720008B2C78 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
+		E82B1F141C63460D00147E5B /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
+		E82B1F161C63462200147E5B /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
 		E8C11E591C63021300D12B67 /* ChatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatViewController.h; sourceTree = "<group>"; };
 		E8C11E5A1C63021300D12B67 /* ChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatViewController.m; sourceTree = "<group>"; };
 		E8C11E5B1C63021300D12B67 /* QPChatAudioCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QPChatAudioCell.h; sourceTree = "<group>"; };
@@ -615,9 +615,6 @@
 		E8C11EB71C63036400D12B67 /* voice1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = voice1.png; sourceTree = "<group>"; };
 		E8C11EB81C63036400D12B67 /* voice2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = voice2.png; sourceTree = "<group>"; };
 		E8C11EB91C63036400D12B67 /* voice3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = voice3.png; sourceTree = "<group>"; };
-		E8C11EF81C6304B600D12B67 /* XMPPTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPTest.m; sourceTree = "<group>"; };
-		E8C11EFC1C63094B00D12B67 /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
-		E8C11EFE1C63095300D12B67 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -625,8 +622,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E8C11EFF1C63095300D12B67 /* libresolv.tbd in Frameworks */,
-				E8C11EFD1C63094B00D12B67 /* libxml2.tbd in Frameworks */,
+				E82B1F171C63462200147E5B /* libresolv.tbd in Frameworks */,
+				E82B1F151C63460D00147E5B /* libxml2.tbd in Frameworks */,
 				515BDE221AF4F5FA00B408DC /* CoreGraphics.framework in Frameworks */,
 				515BDE201AF4F5F100B408DC /* UIKit.framework in Frameworks */,
 				515BDD921AF45EC200B408DC /* libidn.a in Frameworks */,
@@ -1391,12 +1388,10 @@
 		51BCAEFE1AECCD1C008B2C78 = {
 			isa = PBXGroup;
 			children = (
-				E8C11EFE1C63095300D12B67 /* libresolv.tbd */,
-				E8C11EFC1C63094B00D12B67 /* libxml2.tbd */,
+				E82B1F161C63462200147E5B /* libresolv.tbd */,
+				E82B1F141C63460D00147E5B /* libxml2.tbd */,
 				515BDE211AF4F5FA00B408DC /* CoreGraphics.framework */,
 				515BDE1F1AF4F5F100B408DC /* UIKit.framework */,
-				515BDD961AF4601400B408DC /* libresolv.dylib */,
-				515BDD941AF45FE800B408DC /* libxml2.dylib */,
 				51BCAF091AECCD1C008B2C78 /* WeiXin */,
 				51BCAF231AECCD1D008B2C78 /* WeiXinTests */,
 				51BCAF081AECCD1C008B2C78 /* Products */,
@@ -1456,7 +1451,6 @@
 			isa = PBXGroup;
 			children = (
 				51BCAF261AECCD1D008B2C78 /* WeiXinTests.m */,
-				E8C11EF81C6304B600D12B67 /* XMPPTest.m */,
 				51BCAF241AECCD1D008B2C78 /* Supporting Files */,
 			);
 			path = WeiXinTests;
@@ -2045,8 +2039,7 @@
 				GCC_INPUT_FILETYPE = automatic;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					/Applications/Xcode6.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					"$(SDKROOT)/usr/include/libxml2",
+					"$(SDK_DIR)/usr/include/libxml2",
 				);
 				INFOPLIST_FILE = WeiXin/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
@@ -2057,6 +2050,8 @@
 					"$(PROJECT_DIR)/WeiXin/VoiceLib",
 				);
 				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -2068,8 +2063,7 @@
 				GCC_INPUT_FILETYPE = automatic;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					/Applications/Xcode6.1.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					"$(SDKROOT)/usr/include/libxml2",
+					"$(SDK_DIR)/usr/include/libxml2",
 				);
 				INFOPLIST_FILE = WeiXin/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
@@ -2080,6 +2074,8 @@
 					"$(PROJECT_DIR)/WeiXin/VoiceLib",
 				);
 				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -2096,6 +2092,7 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
+				HEADER_SEARCH_PATHS = "$(SDK_DIR)/usr/include/libxml2";
 				INFOPLIST_FILE = WeiXinTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2112,6 +2109,7 @@
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 				);
+				HEADER_SEARCH_PATHS = "$(SDK_DIR)/usr/include/libxml2";
 				INFOPLIST_FILE = WeiXinTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";

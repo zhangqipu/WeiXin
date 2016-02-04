@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "XMPPManager.h"
 
 @interface AppDelegate ()
 
@@ -17,6 +18,14 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
 
+    XMPPManager *xmppManager = [XMPPManager sharedXMPPManager];
+    
+    [xmppManager setUserName:@"zhangqipu1"];
+    [xmppManager setUserPassword:@"123456"];
+    
+    [xmppManager loginUser];
+
+    
     return YES;
 }
 

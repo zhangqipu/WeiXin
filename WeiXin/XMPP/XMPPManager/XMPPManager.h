@@ -10,7 +10,7 @@
 #import "XMPPFramework.h"
 
 #define kHostName   (@"10.211.55.10")
-#define kServerName (@"10.211.55.10")
+#define kServerName (@"jabberd")
 #define kHostPort   (5222)
 
 #define PRETTY_LOG(s) NSLog(@"---------------------------------------------\n%@\n---------------------------------------------", s);
