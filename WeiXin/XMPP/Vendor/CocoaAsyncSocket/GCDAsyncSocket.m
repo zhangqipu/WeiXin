@@ -32,7 +32,7 @@
 // For more information see: https://github.com/robbiehanson/CocoaAsyncSocket/wiki/ARC
 #endif
 
-#if 0
+#if 1
 
 // Logging Enabled - See log level below
 

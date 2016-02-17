@@ -10,10 +10,16 @@
 #import "XMPPFramework.h"
 
 #define kHostName   (@"10.211.55.10")
-#define kServerName (@"jabberd")
+#define kServerName (@"ejabberd")
 #define kHostPort   (5222)
 
-#define PRETTY_LOG(s) NSLog(@"---------------------------------------------\n%@\n---------------------------------------------", s);
+//#define kHostName   (@"127.0.0.1")
+//#define kServerName (@"127.0.0.1")
+//#define kHostPort   (5222)
+
+#define PRETTY_LOG(s) NSLog(@"\n---------------------------------------------\n%@\n---------------------------------------------", s);
+
+extern NSString *const XMPPDidReceiveMessageNotification;
 
 @interface XMPPManager : NSObject <XMPPStreamDelegate, XMPPRosterDelegate>
 
@@ -26,6 +32,8 @@
 @property (strong, nonatomic) XMPPStream *xmppStream;
 @property (strong, nonatomic) XMPPRoster *xmppRoster;
 @property (strong, nonatomic) XMPPRosterCoreDataStorage *rosterStorage;
+
+@property (strong, nonatomic) TURNSocket *turnSocket;
 
 /**
  *  XMPP 单例
@@ -74,5 +82,15 @@
  *  发送消息
  */
 - (void)sendMessageWithText:(NSString *)text;
+
+/**
+ *  接收文件
+ */
+- (void)fileReceivingWithIncomingTURNRequest:(XMPPIQ *)iq;
+
+/**
+ *  发送文件
+ */
+- (void)fileSendingWithUserName:(NSString *)name;
 
 @end

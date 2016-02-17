@@ -18,6 +18,8 @@
 
 #import "XMPPManager.h"
 
+NSString *const XMPPDidReceiveMessageNotification = @"XMPPDidReceiveMessageNotification";
+
 @implementation XMPPManager
 
 static XMPPManager *xmppManager = nil;
@@ -70,17 +72,11 @@ static XMPPManager *xmppManager = nil;
     if (self.userName == nil || self.userPassword == nil)
         return NO;
     
-    if ([self.xmppStream isDisconnected] == NO)
-    {
-        [self.xmppStream disconnect];
-    }
-    
     NSError *err = nil;
-    XMPPJID *jid = [XMPPJID jidWithString:[NSString stringWithFormat:@"%@@%@", self.userName, kServerName]];
-    
+    XMPPJID *jid = [XMPPJID jidWithUser:self.userName domain:kServerName resource:nil];
     [self.xmppStream setMyJID:jid];
     
-    if ([self.xmppStream connectWithTimeout:-1 error:&err] == NO)
+    if ([self.xmppStream connectWithTimeout:XMPPStreamTimeoutNone error:&err] == NO)
     {
         PRETTY_LOG(err);
         return NO;
@@ -133,8 +129,6 @@ static XMPPManager *xmppManager = nil;
     XMPPPresence *presence = [[XMPPPresence alloc] initWithType:@"available"];
     
     [self.xmppStream sendElement:presence];
-    
-    [self sendMessageWithText:@"Hell"];
 }
 
 /**
@@ -163,14 +157,37 @@ static XMPPManager *xmppManager = nil;
  */
 - (void)sendMessageWithText:(NSString *)text
 {
-    // 发给谁
-    XMPPMessage *message = [XMPPMessage messageWithType:@"chat" to:[XMPPJID jidWithString:[NSString stringWithFormat:@"%@@%@", @"jj", kServerName]]];
+//    // 发给谁
+//    XMPPMessage *message = [XMPPMessage messageWithType:@"chat" to:[XMPPJID jidWithString:[NSString stringWithFormat:@"%@@%@", @"jj", kServerName]]];
+//    
+//    // 消息内容
+//    [message addChild:[DDXMLNode elementWithName:@"body" stringValue:@"{\"userid\":\"zhangqipu@127.0.0.1\",\"from\":\"IN\",\"type\":\"normal\",\"date\":\"05-29  09:53:28\",\"receive\":\"null\",\"msg\":\"hell world\n\"}"]];
+//    
+//    // 发送
+//    [self.xmppStream sendElement:message];
     
-    // 消息内容
-    [message addChild:[DDXMLNode elementWithName:@"body" stringValue:@"{\"userid\":\"zhangqipu@127.0.0.1\",\"from\":\"IN\",\"type\":\"normal\",\"date\":\"05-29  09:53:28\",\"receive\":\"null\",\"msg\":\"hell world\n\"}"]];
+    XMPPJID *toJID       = [XMPPJID jidWithUser:@"huangjiasha" domain:kServerName resource:nil];
+    XMPPMessage *message = [XMPPMessage messageWithType:@"chat" to:toJID];
     
-    // 发送
+    [message addChild:[DDXMLNode elementWithName:@"body" stringValue:text]];
+    
     [self.xmppStream sendElement:message];
+}
+
+- (void)fileReceivingWithIncomingTURNRequest:(XMPPIQ *)iq
+{
+    self.turnSocket = [[TURNSocket alloc] initWithStream:self.xmppStream incomingTURNRequest:iq];
+    
+    [self.turnSocket startWithDelegate:self delegateQueue:dispatch_get_main_queue()];
+}
+
+- (void)fileSendingWithUserName:(NSString *)name
+{
+    XMPPJID *toJID = [XMPPJID jidWithUser:name domain:kServerName resource:nil];
+    
+    self.turnSocket = [[TURNSocket alloc] initWithStream:self.xmppStream toJID:toJID];
+    
+    [self.turnSocket startWithDelegate:self delegateQueue:dispatch_get_main_queue()];
 }
 
 #pragma mark -
@@ -262,6 +279,13 @@ static XMPPManager *xmppManager = nil;
 {
     PRETTY_LOG(iq);
     
+    if ([iq isGetIQ]) {
+        // 接收文件
+        if([TURNSocket isNewStartTURNRequest:iq]) {
+            [[XMPPManager sharedXMPPManager] fileReceivingWithIncomingTURNRequest:iq];
+        }
+    }
+    
     return YES;
 }
 
@@ -269,7 +293,7 @@ static XMPPManager *xmppManager = nil;
 {
     NSString *content = [[message elementForName:@"body"] stringValue];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"NewMessageNotification" object:content];
+    [[NSNotificationCenter defaultCenter] postNotificationName:XMPPDidReceiveMessageNotification object:content];
 }
 
 - (void)xmppStream:(XMPPStream *)sender didReceivePresence:(XMPPPresence *)presence
@@ -320,11 +344,24 @@ static XMPPManager *xmppManager = nil;
  *  @param presence 请求信息节点
  */
 - (void)xmppRoster:(XMPPRoster *)sender didReceivePresenceSubscriptionRequest:(XMPPPresence *)presence
-{
+{    
     //请求的用户
     NSString *presenceFromUser =[NSString stringWithFormat:@"%@", [[presence from] user]];
     XMPPJID *jid = [XMPPJID jidWithString:presenceFromUser];
     [self.xmppRoster acceptPresenceSubscriptionRequestFrom:jid andAddToRoster:YES];
+}
+
+#pragma mark -
+#pragma mark TURNSocket Delegate
+
+- (void)turnSocket:(TURNSocket *)sender didSucceed:(GCDAsyncSocket *)socket
+{
+    
+}
+
+- (void)turnSocketDidFail:(TURNSocket *)sender
+{
+    
 }
 
 @end

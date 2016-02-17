@@ -19,6 +19,8 @@
 
 #import <objc/runtime.h>
 
+#import "XMPPManager.h"
+
 NSString *ChatTextCellId  = @"ChatTextCellId";
 NSString *ChatAudioCellId = @"ChatAudioCellId";
 NSString *ChatImageCellId = @"ChatImageCellId";
@@ -37,9 +39,14 @@ NSString *ChatImageCellId = @"ChatImageCellId";
         self.messages     = [NSMutableArray array];
         self.stateMachine = [[QPChatStateMachine alloc] initWithChatController:self];
     }
-
+    
     return self;
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark
+#pragma mark LifeCycle
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -53,6 +60,27 @@ NSString *ChatImageCellId = @"ChatImageCellId";
     [self addMessages];
 }
 
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didReceiveXmppMessage:)
+                                                 name:XMPPDidReceiveMessageNotification
+                                               object:nil];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:XMPPDidReceiveMessageNotification
+                                                  object:nil];
+}
+
+
 - (void)setBackgroundImage
 {
     UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"back"]];
@@ -65,7 +93,7 @@ NSString *ChatImageCellId = @"ChatImageCellId";
     self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-
+    
     [self.view addSubview:self.tableView];
 }
 
@@ -83,28 +111,28 @@ NSString *ChatImageCellId = @"ChatImageCellId";
     model1.nickname = @"张齐朴";
     model1.content = @"文";
     model1.isLeft = YES;
-
+    
     QPMessageModel *model11 = [[QPMessageModel alloc] init];
     model11.messageType = MessageTypeText;
     model11.time = nil;
     model11.nickname = @"张齐朴";
     model11.content = @"文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字文字";
     model11.isLeft = NO;
-
+    
     QPMessageModel *model2 = [[QPMessageModel alloc] init];
     model2.messageType = MessageTypeAudio;
     model2.time = nil;
     model2.nickname = @"张齐朴";
     model2.content = @"12";
     model2.isLeft = YES;
-
+    
     QPMessageModel *model22 = [[QPMessageModel alloc] init];
     model22.messageType = MessageTypeAudio;
     model22.time = @"2016-01-01 15:37";
     model22.nickname = @"张齐朴";
     model22.content = @"12";
     model22.isLeft = NO;
-
+    
     QPMessageModel *model3 = [[QPMessageModel alloc] init];
     model3.messageType = MessageTypeImage;
     model3.time = @"2016-01-01 15:37";
@@ -118,21 +146,21 @@ NSString *ChatImageCellId = @"ChatImageCellId";
     model33.nickname = @"张齐朴";
     model33.content = @"luyi.jpg";
     model33.isLeft = NO;
-
+    
     [self.messages addObjectsFromArray:@[model1, model11, model2, model22, model3, model33]];
-
+    
     [self.tableView reloadData];
     [self scrollToBottom];
 }
 
-- (void)insertMessageWithType:(MessageType)type andContent:(NSString *)content;
+- (void)insertMessageWithType:(MessageType)type andContent:(NSString *)content isLeft:(BOOL)isLeft
 {
     QPMessageModel *model3 = [[QPMessageModel alloc] init];
     model3.messageType = type;
     model3.time = @"2016-01-01 15:37";
     model3.nickname = @"张齐朴";
     model3.content = content;
-    model3.isLeft = NO;
+    model3.isLeft = isLeft;
     
     [self.messages addObject:model3];
 }
@@ -184,8 +212,10 @@ NSString *ChatImageCellId = @"ChatImageCellId";
     // Dispose of any resources that can be recreated.
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark
 #pragma mark TableViewDelegate
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -195,11 +225,11 @@ NSString *ChatImageCellId = @"ChatImageCellId";
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // 定义三种cell：文字（带表情） 图片 声音
-
+    
     NSString *cellId = ChatTextCellId;
     Class class = [QPChatTextCell class];
     QPMessageModel *model = self.messages[indexPath.row];
-
+    
     switch (model.messageType) {
         case MessageTypeText:
             cellId = ChatTextCellId;
@@ -213,33 +243,35 @@ NSString *ChatImageCellId = @"ChatImageCellId";
             cellId = ChatImageCellId;
             class = [QPChatImageCell class];
             break;
-
+            
         default:
             break;
     }
-
+    
     QPChatBaseCell *cell = [tableView dequeueReusableCellWithIdentifier:cellId];
-
+    
     if (!cell) {
         cell = [[class alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellId];
         cell.backgroundColor = [UIColor clearColor];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }
-
+    
     [cell setupContentWithModel:model];
-
+    
     return cell;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     QPMessageModel *model = self.messages[indexPath.row];
-
+    
     return model.cellHeight;
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark
 #pragma mark QPInputToolBarDelegate
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 - (void)inputToolBarSendText:(QPInputToolBar *)inputToolBar
 {
@@ -248,13 +280,16 @@ NSString *ChatImageCellId = @"ChatImageCellId";
     
     if ([textView.text length] > 0 == NO) return;
     
-    [self insertMessageWithType:MessageTypeText andContent:textView.text];
+    [self sendXmppMessage:textView.text];
+    
+    [self insertMessageWithType:MessageTypeText andContent:textView.text isLeft:NO];
     
     textView.text = @"";
     [textVoiceView textViewDidChange:textView];
     
     [self.tableView reloadData];
     [self scrollToBottom];
+    
 }
 
 - (void)inputToolBarBeginTextInput:(QPInputToolBar *)inputToolBar
@@ -276,19 +311,21 @@ NSString *ChatImageCellId = @"ChatImageCellId";
 - (void)inputToolBarRightFirstBarButtonItemClicked:(QPInputToolBar *)inputToolBar
 {
     [self.view endEditing:YES];
-
+    
     [self.stateMachine changeToState:QPChatInputStateEmotionInput];
 }
 
 - (void)inputToolBarRightSecondBarButtonItemClicked:(QPInputToolBar *)inputToolBar
 {
     [self.view endEditing:YES];
-
+    
     [self.stateMachine changeToState:QPChatInputStateExtendMenu];
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark
 #pragma mark QPEmotionViewDelegate
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 - (void)emotionViewDidSelectedEmoj:(NSString *)emojiString
 {
@@ -324,14 +361,44 @@ NSString *ChatImageCellId = @"ChatImageCellId";
                                   animated:YES];
 }
 
-/*
-#pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark
+#pragma mark XMPP Somethings
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+- (void)didReceiveXmppMessage:(NSNotification *)notification
+{
+    NSString *content = notification.object;
+    if (!content) {
+        return ;
+    }
+    
+    [self insertMessageWithType:MessageTypeText andContent:content isLeft:YES];
+    
+    [self.tableView reloadData];
+    [self scrollToBottom];
 }
-*/
+
+- (void)sendXmppMessage:(NSString *)content
+{
+    if ([content length] > 0) {
+        if ([content isEqualToString:@"file"]) {
+            [[XMPPManager sharedXMPPManager] fileSendingWithUserName:@"huangjiasha"];
+        } else {
+            [[XMPPManager sharedXMPPManager] sendMessageWithText:content];
+        }
+    }
+}
+
+/*
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 @end

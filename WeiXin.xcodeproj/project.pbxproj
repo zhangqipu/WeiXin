@@ -133,7 +133,6 @@
 		515BDD901AF45EC200B408DC /* DDXMLNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 515BDD0B1AF45EC100B408DC /* DDXMLNode.m */; };
 		515BDD911AF45EC200B408DC /* build-libidn.sh in Resources */ = {isa = PBXBuildFile; fileRef = 515BDD0F1AF45EC100B408DC /* build-libidn.sh */; };
 		515BDD921AF45EC200B408DC /* libidn.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 515BDD111AF45EC100B408DC /* libidn.a */; };
-		515BDD931AF45EC200B408DC /* XMPPManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 515BDD161AF45EC200B408DC /* XMPPManager.m */; };
 		515BDE201AF4F5F100B408DC /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 515BDE1F1AF4F5F100B408DC /* UIKit.framework */; };
 		515BDE221AF4F5FA00B408DC /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 515BDE211AF4F5FA00B408DC /* CoreGraphics.framework */; };
 		51BCAF0D1AECCD1C008B2C78 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 51BCAF0C1AECCD1C008B2C78 /* main.m */; };
@@ -152,6 +151,7 @@
 		51BCAF9F1AED1720008B2C78 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 51BCAF9E1AED1720008B2C78 /* icon.png */; };
 		E82B1F151C63460D00147E5B /* libxml2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E82B1F141C63460D00147E5B /* libxml2.tbd */; };
 		E82B1F171C63462200147E5B /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = E82B1F161C63462200147E5B /* libresolv.tbd */; };
+		E89984641C746A220083764E /* XMPPManager.m in Sources */ = {isa = PBXBuildFile; fileRef = E89984631C746A220083764E /* XMPPManager.m */; };
 		E8C11E701C63021300D12B67 /* ChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E8C11E5A1C63021300D12B67 /* ChatViewController.m */; };
 		E8C11E711C63021300D12B67 /* QPChatAudioCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E8C11E5C1C63021300D12B67 /* QPChatAudioCell.m */; };
 		E8C11E721C63021300D12B67 /* QPChatBaseCell.m in Sources */ = {isa = PBXBuildFile; fileRef = E8C11E5E1C63021300D12B67 /* QPChatBaseCell.m */; };
@@ -498,8 +498,6 @@
 		515BDD111AF45EC100B408DC /* libidn.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libidn.a; sourceTree = "<group>"; };
 		515BDD121AF45EC200B408DC /* stringprep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stringprep.h; sourceTree = "<group>"; };
 		515BDD131AF45EC200B408DC /* XMPPFramework.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPFramework.h; sourceTree = "<group>"; };
-		515BDD151AF45EC200B408DC /* XMPPManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPManager.h; sourceTree = "<group>"; };
-		515BDD161AF45EC200B408DC /* XMPPManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPManager.m; sourceTree = "<group>"; };
 		515BDE1F1AF4F5F100B408DC /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		515BDE211AF4F5FA00B408DC /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		5192F4871AFE4F8400EC1B8B /* Common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Common.h; path = Resource/Common.h; sourceTree = "<group>"; };
@@ -530,6 +528,8 @@
 		51BCAF9E1AED1720008B2C78 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		E82B1F141C63460D00147E5B /* libxml2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.tbd; path = usr/lib/libxml2.tbd; sourceTree = SDKROOT; };
 		E82B1F161C63462200147E5B /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
+		E89984621C746A220083764E /* XMPPManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMPPManager.h; sourceTree = "<group>"; };
+		E89984631C746A220083764E /* XMPPManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMPPManager.m; sourceTree = "<group>"; };
 		E8C11E591C63021300D12B67 /* ChatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChatViewController.h; sourceTree = "<group>"; };
 		E8C11E5A1C63021300D12B67 /* ChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChatViewController.m; sourceTree = "<group>"; };
 		E8C11E5B1C63021300D12B67 /* QPChatAudioCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QPChatAudioCell.h; sourceTree = "<group>"; };
@@ -1379,8 +1379,8 @@
 		515BDD141AF45EC200B408DC /* XMPPManager */ = {
 			isa = PBXGroup;
 			children = (
-				515BDD151AF45EC200B408DC /* XMPPManager.h */,
-				515BDD161AF45EC200B408DC /* XMPPManager.m */,
+				E89984621C746A220083764E /* XMPPManager.h */,
+				E89984631C746A220083764E /* XMPPManager.m */,
 			);
 			path = XMPPManager;
 			sourceTree = "<group>";
@@ -1804,6 +1804,7 @@
 				515BDD591AF45EC200B408DC /* NSXMLElement+XEP_0059.m in Sources */,
 				515BDD751AF45EC200B408DC /* XMPPAutoTime.m in Sources */,
 				515BDD801AF45EC200B408DC /* LibIDN.m in Sources */,
+				E89984641C746A220083764E /* XMPPManager.m in Sources */,
 				515BDD631AF45EC200B408DC /* XMPPTransports.m in Sources */,
 				51BCAF431AECDEF8008B2C78 /* MainTabViewController.m in Sources */,
 				515BDD401AF45EC200B408DC /* XMPPRoomMessageCoreDataStorageObject.m in Sources */,
@@ -1842,7 +1843,6 @@
 				515BDD481AF45EC200B408DC /* XMPPRoomOccupantMemoryStorageObject.m in Sources */,
 				515BDD351AF45EC200B408DC /* XMPPUserMemoryStorageObject.m in Sources */,
 				515BDD571AF45EC200B408DC /* XMPPvCardTempModule.m in Sources */,
-				515BDD931AF45EC200B408DC /* XMPPManager.m in Sources */,
 				515BDD1C1AF45EC200B408DC /* XMPPXFacebookPlatformAuthentication.m in Sources */,
 				515BDD501AF45EC200B408DC /* XMPPvCardTempCoreDataStorageObject.m in Sources */,
 				515BDD8B1AF45EC200B408DC /* DispatchQueueLogFormatter.m in Sources */,
