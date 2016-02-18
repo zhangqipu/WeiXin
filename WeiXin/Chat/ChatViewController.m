@@ -383,7 +383,7 @@ NSString *ChatImageCellId = @"ChatImageCellId";
 - (void)sendXmppMessage:(NSString *)content
 {
     if ([content length] > 0) {
-        if ([content isEqualToString:@"file"]) {
+        if ([content isEqualToString:@"File"]) {
             [[XMPPManager sharedXMPPManager] fileSendingWithUserName:@"huangjiasha"];
         } else {
             [[XMPPManager sharedXMPPManager] sendMessageWithText:content];

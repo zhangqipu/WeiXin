@@ -9,9 +9,10 @@
 #import <Foundation/Foundation.h>
 #import "XMPPFramework.h"
 
-#define kHostName   (@"10.211.55.10")
-#define kServerName (@"ejabberd")
-#define kHostPort   (5222)
+#define kHostName     (@"192.168.18.146")
+#define kServerName   (@"ejabberd")
+#define kResourceName (@"sameresource")
+#define kHostPort     (5222)
 
 //#define kHostName   (@"127.0.0.1")
 //#define kServerName (@"127.0.0.1")

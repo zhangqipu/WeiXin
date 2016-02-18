@@ -73,7 +73,7 @@ static XMPPManager *xmppManager = nil;
         return NO;
     
     NSError *err = nil;
-    XMPPJID *jid = [XMPPJID jidWithUser:self.userName domain:kServerName resource:nil];
+    XMPPJID *jid = [XMPPJID jidWithUser:self.userName domain:kServerName resource:kResourceName];
     [self.xmppStream setMyJID:jid];
     
     if ([self.xmppStream connectWithTimeout:XMPPStreamTimeoutNone error:&err] == NO)
@@ -147,7 +147,7 @@ static XMPPManager *xmppManager = nil;
  */
 - (void)addFriend
 {
-    XMPPJID *jid = [XMPPJID jidWithUser:@"zhangqipu" domain:kServerName resource:nil];
+    XMPPJID *jid = [XMPPJID jidWithUser:@"zhangqipu" domain:kServerName resource:kResourceName];
     
     [self.xmppRoster subscribePresenceToUser:jid];
 }
@@ -166,7 +166,7 @@ static XMPPManager *xmppManager = nil;
 //    // 发送
 //    [self.xmppStream sendElement:message];
     
-    XMPPJID *toJID       = [XMPPJID jidWithUser:@"huangjiasha" domain:kServerName resource:nil];
+    XMPPJID *toJID       = [XMPPJID jidWithUser:@"huangjiasha" domain:kServerName resource:kResourceName];
     XMPPMessage *message = [XMPPMessage messageWithType:@"chat" to:toJID];
     
     [message addChild:[DDXMLNode elementWithName:@"body" stringValue:text]];
@@ -183,7 +183,9 @@ static XMPPManager *xmppManager = nil;
 
 - (void)fileSendingWithUserName:(NSString *)name
 {
-    XMPPJID *toJID = [XMPPJID jidWithUser:name domain:kServerName resource:nil];
+    [TURNSocket setProxyCandidates:@[kServerName]];
+
+    XMPPJID *toJID = [XMPPJID jidWithUser:name domain:kServerName resource:kResourceName];
     
     self.turnSocket = [[TURNSocket alloc] initWithStream:self.xmppStream toJID:toJID];
     
@@ -279,11 +281,11 @@ static XMPPManager *xmppManager = nil;
 {
     PRETTY_LOG(iq);
     
-    if ([iq isGetIQ]) {
+    if ([iq isSetIQ]) {
         // 接收文件
-        if([TURNSocket isNewStartTURNRequest:iq]) {
+//        if([TURNSocket isNewStartTURNRequest:iq]) {
             [[XMPPManager sharedXMPPManager] fileReceivingWithIncomingTURNRequest:iq];
-        }
+//        }
     }
     
     return YES;
@@ -291,6 +293,8 @@ static XMPPManager *xmppManager = nil;
 
 - (void)xmppStream:(XMPPStream *)sender didReceiveMessage:(XMPPMessage *)message
 {
+    PRETTY_LOG(message);
+    
     NSString *content = [[message elementForName:@"body"] stringValue];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:XMPPDidReceiveMessageNotification object:content];
