@@ -1,11 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "XMPPJID.h"
-
-#if TARGET_OS_IPHONE
-  #import "DDXML.h"
-#endif
-
-
+#import "DDXML.h"
 /**
  * The XMPPElement provides the base class for XMPPIQ, XMPPMessage & XMPPPresence.
  * 
@@ -15,7 +10,7 @@
  * On the iPhone, the KissXML library provides a drop-in replacement for Apple's NSXML classes.
 **/
 
-@interface XMPPElement : NSXMLElement <NSCoding, NSCopying>
+@interface XMPPElement : DDXMLElement <NSSecureCoding, NSCopying>
 
 #pragma mark Common Jabber Methods
 

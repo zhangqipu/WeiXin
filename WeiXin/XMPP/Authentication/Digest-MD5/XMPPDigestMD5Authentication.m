@@ -71,9 +71,15 @@
 
 - (id)initWithStream:(XMPPStream *)stream password:(NSString *)inPassword
 {
+	return [self initWithStream:stream username:nil password:inPassword];
+}
+
+- (id)initWithStream:(XMPPStream *)stream username:(NSString *)inUsername password:(NSString *)inPassword
+{
 	if ((self = [super init]))
 	{
 		xmppStream = stream;
+		username = inUsername;
 		password = inPassword;
 	}
 	return self;
@@ -110,9 +116,9 @@
 	
 	NSDictionary *auth = [self dictionaryFromChallenge:authResponse];
 	
-	realm   = [auth objectForKey:@"realm"];
-	nonce   = [auth objectForKey:@"nonce"];
-	qop     = [auth objectForKey:@"qop"];
+	realm   = auth[@"realm"];
+	nonce   = auth[@"nonce"];
+	qop     = auth[@"qop"];
 	
 	// Fill out all the other variables
 	// 
@@ -140,7 +146,10 @@
 	if (cnonce == nil)
 		cnonce = [XMPPStream generateUUID];
 	
-	username = [myJID user];
+	if (username == nil)
+	{
+		username = [myJID user];
+	}
 	
 	// Create and send challenge response element
 	
@@ -160,7 +169,7 @@
 	if ([[authResponse name] isEqualToString:@"challenge"])
 	{
 		NSDictionary *auth = [self dictionaryFromChallenge:authResponse];
-		NSString *rspauth = [auth objectForKey:@"rspauth"];
+		NSString *rspauth = auth[@"rspauth"];
 		
 		if (rspauth == nil)
 		{
@@ -215,7 +224,7 @@
 	// Once "decoded", it's just a string of key=value pairs separated by commas.
 	
 	NSData *base64Data = [[challenge stringValue] dataUsingEncoding:NSASCIIStringEncoding];
-	NSData *decodedData = [base64Data base64Decoded];
+	NSData *decodedData = [base64Data xmpp_base64Decoded];
 	
 	NSString *authStr = [[NSString alloc] initWithData:decodedData encoding:NSUTF8StringEncoding];
 	
@@ -244,7 +253,7 @@
 			
             if(key && value)
             {
-                [auth setObject:value forKey:key];
+                auth[key] = value;
             }
 		}
 	}
@@ -260,7 +269,7 @@
 	XMPPLogVerbose(@"HA1str: %@", HA1str);
 	XMPPLogVerbose(@"HA2str: %@", HA2str);
 	
-	NSData *HA1dataA = [[HA1str dataUsingEncoding:NSUTF8StringEncoding] md5Digest];
+	NSData *HA1dataA = [[HA1str dataUsingEncoding:NSUTF8StringEncoding] xmpp_md5Digest];
 	NSData *HA1dataB = [[NSString stringWithFormat:@":%@:%@", nonce, cnonce] dataUsingEncoding:NSUTF8StringEncoding];
 	
 	XMPPLogVerbose(@"HA1dataA: %@", HA1dataA);
@@ -272,9 +281,9 @@
 	
 	XMPPLogVerbose(@"HA1data: %@", HA1data);
 	
-	NSString *HA1 = [[HA1data md5Digest] hexStringValue];
+	NSString *HA1 = [[HA1data xmpp_md5Digest] xmpp_hexStringValue];
 	
-	NSString *HA2 = [[[HA2str dataUsingEncoding:NSUTF8StringEncoding] md5Digest] hexStringValue];
+	NSString *HA2 = [[[HA2str dataUsingEncoding:NSUTF8StringEncoding] xmpp_md5Digest] xmpp_hexStringValue];
 	
 	XMPPLogVerbose(@"HA1: %@", HA1);
 	XMPPLogVerbose(@"HA2: %@", HA2);
@@ -284,7 +293,7 @@
 	
 	XMPPLogVerbose(@"responseStr: %@", responseStr);
 	
-	NSString *response = [[[responseStr dataUsingEncoding:NSUTF8StringEncoding] md5Digest] hexStringValue];
+	NSString *response = [[[responseStr dataUsingEncoding:NSUTF8StringEncoding] xmpp_md5Digest] xmpp_hexStringValue];
 	
 	XMPPLogVerbose(@"response: %@", response);
 	
@@ -308,7 +317,7 @@
 	
 	NSData *utf8data = [buffer dataUsingEncoding:NSUTF8StringEncoding];
 	
-	return [utf8data base64Encoded];
+	return [utf8data xmpp_base64Encoded];
 }
 
 @end

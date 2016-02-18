@@ -1,8 +1,5 @@
 #import <CoreData/CoreData.h>
-
-#if TARGET_OS_IPHONE
-  #import "DDXML.h"
-#endif
+#import "DDXML.h"
 
 @class XMPPCapsResourceCoreDataStorageObject;
 

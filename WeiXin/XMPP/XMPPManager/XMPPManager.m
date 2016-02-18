@@ -174,22 +174,31 @@ static XMPPManager *xmppManager = nil;
     [self.xmppStream sendElement:message];
 }
 
-- (void)fileReceivingWithIncomingTURNRequest:(XMPPIQ *)iq
-{
-    self.turnSocket = [[TURNSocket alloc] initWithStream:self.xmppStream incomingTURNRequest:iq];
-    
-    [self.turnSocket startWithDelegate:self delegateQueue:dispatch_get_main_queue()];
-}
-
 - (void)fileSendingWithUserName:(NSString *)name
 {
-    [TURNSocket setProxyCandidates:@[kServerName]];
+    XMPPJID *toJID    = [XMPPJID jidWithUser:name domain:kServerName resource:@"qipu"];
+    NSData  *sendData = [@"Hello" dataUsingEncoding:NSUTF8StringEncoding];
+    
+    self.outgoingFileTransfer = [[XMPPOutgoingFileTransfer alloc] initWithDispatchQueue:dispatch_get_main_queue()];
+    
+    [self.outgoingFileTransfer activate:self.xmppStream];
+    [self.outgoingFileTransfer addDelegate:self delegateQueue:dispatch_get_main_queue()];
+    
+    [self.outgoingFileTransfer sendData:sendData
+                                  named:@"sendData"
+                            toRecipient:toJID
+                            description:@"sendData"
+                                  error:nil];
+}
 
-    XMPPJID *toJID = [XMPPJID jidWithUser:name domain:kServerName resource:kResourceName];
+- (void)fileReceivingWithIncoming
+{
+    self.incomingFileTransfer = [[XMPPIncomingFileTransfer alloc] initWithDispatchQueue:dispatch_get_main_queue()];
     
-    self.turnSocket = [[TURNSocket alloc] initWithStream:self.xmppStream toJID:toJID];
+    self.incomingFileTransfer.autoAcceptFileTransfers = YES;
     
-    [self.turnSocket startWithDelegate:self delegateQueue:dispatch_get_main_queue()];
+    [self.incomingFileTransfer activate:self.xmppStream];
+    [self.incomingFileTransfer addDelegate:self delegateQueue:dispatch_get_main_queue()];
 }
 
 #pragma mark -
@@ -281,12 +290,10 @@ static XMPPManager *xmppManager = nil;
 {
     PRETTY_LOG(iq);
     
-    if ([iq isSetIQ]) {
-        // 接收文件
-//        if([TURNSocket isNewStartTURNRequest:iq]) {
-            [[XMPPManager sharedXMPPManager] fileReceivingWithIncomingTURNRequest:iq];
-//        }
-    }
+    if ([iq isGetIQ]) {
+    if ([[iq to].user isEqualToString:@"huangjiasha"]) {
+        [self fileReceivingWithIncoming];
+    }}
     
     return YES;
 }
@@ -355,15 +362,36 @@ static XMPPManager *xmppManager = nil;
     [self.xmppRoster acceptPresenceSubscriptionRequestFrom:jid andAddToRoster:YES];
 }
 
-#pragma mark -
-#pragma mark TURNSocket Delegate
+#pragma mark - XMPPOutgoingFileTransferDelegate Methods
 
-- (void)turnSocket:(TURNSocket *)sender didSucceed:(GCDAsyncSocket *)socket
+- (void)xmppOutgoingFileTransfer:(XMPPOutgoingFileTransfer *)sender
+                didFailWithError:(NSError *)error
+{
+    PRETTY_LOG(error);
+}
+
+- (void)xmppOutgoingFileTransferDidSucceed:(XMPPOutgoingFileTransfer *)sender
+{
+    PRETTY_LOG(@"文件发送成功");
+}
+
+#pragma mark - XMPPIncomingFileTransferDelegate Methods
+
+- (void)xmppIncomingFileTransfer:(XMPPIncomingFileTransfer *)sender
+                didFailWithError:(NSError *)error
 {
     
 }
 
-- (void)turnSocketDidFail:(TURNSocket *)sender
+- (void)xmppIncomingFileTransfer:(XMPPIncomingFileTransfer *)sender
+               didReceiveSIOffer:(XMPPIQ *)offer
+{
+    
+}
+
+- (void)xmppIncomingFileTransfer:(XMPPIncomingFileTransfer *)sender
+              didSucceedWithData:(NSData *)data
+                           named:(NSString *)name
 {
     
 }

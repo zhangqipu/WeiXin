@@ -143,7 +143,7 @@
 		member = [NSXMLElement elementWithName:@"member"];
 		name = [NSXMLElement elementWithName:@"name" stringValue:key];
 		[member addChild:name];
-		[member addChild:[self valueElementFromObject:[dictionary objectForKey:key]]];
+		[member addChild:[self valueElementFromObject:dictionary[key]]];
 	}
 	
 	return [self wrapValueElementAroundElement:structElement];
@@ -196,7 +196,7 @@
 
 
 +(NSXMLElement *)valueElementFromData:(NSData *)data {	
-    return [self valueElementFromElementWithName:@"base64" value:[data base64Encoded]];
+    return [self valueElementFromElementWithName:@"base64" value:[data xmpp_base64Encoded]];
 }
 
 +(NSXMLElement *)valueElementFromElementWithName:(NSString *)elementName value:(NSString *)value {

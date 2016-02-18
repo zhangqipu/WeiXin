@@ -34,7 +34,8 @@ extern NSString *const XMPPDidReceiveMessageNotification;
 @property (strong, nonatomic) XMPPRoster *xmppRoster;
 @property (strong, nonatomic) XMPPRosterCoreDataStorage *rosterStorage;
 
-@property (strong, nonatomic) TURNSocket *turnSocket;
+@property (strong, nonatomic) XMPPOutgoingFileTransfer *outgoingFileTransfer;
+@property (strong, nonatomic) XMPPIncomingFileTransfer *incomingFileTransfer;
 
 /**
  *  XMPP 单例
@@ -87,7 +88,7 @@ extern NSString *const XMPPDidReceiveMessageNotification;
 /**
  *  接收文件
  */
-- (void)fileReceivingWithIncomingTURNRequest:(XMPPIQ *)iq;
+- (void)fileReceivingWithIncoming;
 
 /**
  *  发送文件

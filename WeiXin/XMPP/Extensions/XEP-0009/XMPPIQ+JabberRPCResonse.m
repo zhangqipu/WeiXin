@@ -229,19 +229,17 @@
 	NSString *key = [self objectFromElement:[memberElement elementForName:@"name"]];
 	id value = [self objectFromElement:[memberElement elementForName:@"value"]];
 	
-	return [NSDictionary dictionaryWithObject:value forKey:key];	
+	return @{key : value};
 }
 	
 #pragma mark -
 
 - (NSDate *)parseDateString: (NSString *)dateString withFormat: (NSString *)format {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    NSDate *result = nil;
-    
+    [dateFormatter setLocale:[[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"]];
     [dateFormatter setDateFormat: format];
     
-    result = [dateFormatter dateFromString: dateString];
-    
+    NSDate *result = [dateFormatter dateFromString: dateString];
     
     return result;
 }
@@ -249,19 +247,19 @@
 #pragma mark -
 
 - (NSNumber *)parseInteger: (NSString *)value {
-    return [NSNumber numberWithInteger: [value integerValue]];
+    return @([value integerValue]);
 }
 
 - (NSNumber *)parseDouble: (NSString *)value {
-    return [NSNumber numberWithDouble: [value doubleValue]];
+    return @([value doubleValue]);
 }
 
 - (NSNumber *)parseBoolean: (NSString *)value {
     if ([value isEqualToString: @"1"]) {
-        return [NSNumber numberWithBool: YES];
+        return @YES;
     }
     
-    return [NSNumber numberWithBool: NO];
+    return @NO;
 }
 
 - (NSString *)parseString: (NSString *)value {
@@ -283,7 +281,7 @@
 - (NSData *)parseData: (NSString *)value {
 	// Convert the base 64 encoded data into a string
 	NSData *base64Data = [value dataUsingEncoding:NSASCIIStringEncoding];
-	NSData *decodedData = [base64Data base64Decoded];
+	NSData *decodedData = [base64Data xmpp_base64Decoded];
 	
     return decodedData;
 }

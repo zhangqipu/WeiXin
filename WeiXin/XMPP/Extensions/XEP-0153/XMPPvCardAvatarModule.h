@@ -11,10 +11,11 @@
 
 
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
 
-#if !TARGET_OS_IPHONE
-  #import <Cocoa/Cocoa.h>
+#if TARGET_OS_IPHONE
+    #import <UIKit/UIKit.h>
+#else
+    #import <Cocoa/Cocoa.h>
 #endif
 
 #import "XMPP.h"
@@ -89,3 +90,4 @@
 - (void)clearvCardTempForJID:(XMPPJID *)jid xmppStream:(XMPPStream *)stream;
 
 @end
+

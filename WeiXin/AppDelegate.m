@@ -20,7 +20,7 @@
 
     XMPPManager *xmppManager = [XMPPManager sharedXMPPManager];
     
-    [xmppManager setUserName:@"huangjiasha"];
+    [xmppManager setUserName:@"zhangqipu"];
     [xmppManager setUserPassword:@"123456"];
     
     [xmppManager loginUser];

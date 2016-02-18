@@ -1,9 +1,10 @@
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
 #import <CoreData/CoreData.h>
 
-#if !TARGET_OS_IPHONE
-  #import <Cocoa/Cocoa.h>
+#if TARGET_OS_IPHONE
+    #import <UIKit/UIKit.h>
+#else
+    #import <Cocoa/Cocoa.h>
 #endif
 
 #import "XMPPUser.h"
@@ -52,6 +53,7 @@
 
 - (void)updateWithItem:(NSXMLElement *)item;
 - (void)updateWithPresence:(XMPPPresence *)presence streamBareJidStr:(NSString *)streamBareJidStr;
+- (void)recalculatePrimaryResource;
 
 - (NSComparisonResult)compareByName:(XMPPUserCoreDataStorageObject *)another;
 - (NSComparisonResult)compareByName:(XMPPUserCoreDataStorageObject *)another options:(NSStringCompareOptions)mask;

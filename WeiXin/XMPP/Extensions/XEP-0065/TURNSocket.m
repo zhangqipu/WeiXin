@@ -92,7 +92,7 @@ static NSMutableArray *proxyCandidates;
 		initialized = YES;
 		
 		existingTurnSockets = [[NSMutableDictionary alloc] init];
-		proxyCandidates = [[NSMutableArray alloc] initWithObjects:@"jabber.org", nil];
+		proxyCandidates = [@[@"jabber.org"] mutableCopy];
 	}
 }
 
@@ -140,7 +140,7 @@ static NSMutableArray *proxyCandidates;
 		
 		@synchronized(existingTurnSockets)
 		{
-			if ([existingTurnSockets objectForKey:uuid])
+			if (existingTurnSockets[uuid])
 				return NO;
 			else
 				return YES;
@@ -211,7 +211,7 @@ static NSMutableArray *proxyCandidates;
 		// Get list of proxy candidates
 		// Each host in this list will be queried to see if it can be used as a proxy
 		proxyCandidates = [[self class] proxyCandidates];
-		NSLog(@"创建一个发送附件的连接，对方的jid = %@，自己创建的uuid = %@，获得的代理候选 ＝ %@，此时isclient＝yes",aJid,uuid,proxyCandidates);
+		
 		// Configure everything else
 		[self performPostInitSetup];
 	}
@@ -242,7 +242,7 @@ static NSMutableArray *proxyCandidates;
 		// Extract streamhost information from turn request
 		NSXMLElement *query = [iq elementForName:@"query" xmlns:@"http://jabber.org/protocol/bytestreams"];
 		streamhosts = [[query elementsForName:@"streamhost"] mutableCopy];
-        NSLog(@"创建一个收到附件的连接iq = %@，对方的jid从iq里面获得，jid ＝ %@，uuid ＝ %@，isclient = no,streamhost = %@",iq,jid,uuid,streamhosts);
+		
 		// Configure everything else
 		[self performPostInitSetup];
 	}
@@ -255,8 +255,7 @@ static NSMutableArray *proxyCandidates;
 - (void)performPostInitSetup
 {
 	// Create dispatch queue.
-    NSLog(@"performPostInitSetup 在创建完连接后调用");
-
+	
 	turnQueue = dispatch_queue_create("TURNSocket", NULL);
 	
 	turnQueueTag = &turnQueueTag;
@@ -267,12 +266,9 @@ static NSMutableArray *proxyCandidates;
 	
 	@synchronized(existingTurnSockets)
 	{
-		[existingTurnSockets setObject:self forKey:uuid];
-        NSLog(@"performPostInitSetup 添加新的连接existingTurnSockets:%@ uuid: %@",existingTurnSockets,uuid);
+		existingTurnSockets[uuid] = self;
 	}
 }
-
-
 
 /**
  * Standard deconstructor.
@@ -326,8 +322,6 @@ static NSMutableArray *proxyCandidates;
 **/
 - (void)startWithDelegate:(id)aDelegate delegateQueue:(dispatch_queue_t)aDelegateQueue
 {
-    NSLog(@"startWithDelegate:delegateQueue:");
-    NSLog(@"If the TURNSocket has already been started, this method does nothing, and the existing delegate is not changed.");
 	NSParameterAssert(aDelegate != nil);
 	NSParameterAssert(aDelegateQueue != NULL);
 	
@@ -336,7 +330,6 @@ static NSMutableArray *proxyCandidates;
 		if (state != STATE_INIT)
 		{
 			XMPPLogWarn(@"%@: Ignoring start request. Turn procedure already started.", THIS_FILE);
-            NSLog(@"%@: Ignoring start request. Turn procedure already started.", THIS_FILE);
 			return;
 		}
 		
@@ -375,13 +368,11 @@ static NSMutableArray *proxyCandidates;
 		
 		// Start the TURN procedure
 		
-		if (isClient){
-            NSLog(@"isclient = yes  当此时的连接是发送端; queryProxyCandidates");
+		if (isClient)
 			[self queryProxyCandidates];
-		}else{
-            NSLog(@"isclient  = no  当此时的连接的接收端; targetConnect");
+		else
 			[self targetConnect];
-		}
+		
 	}});
 }
 
@@ -450,14 +441,13 @@ static NSMutableArray *proxyCandidates;
 	NSUInteger i;
 	for(i = 0; i < [streamhosts count]; i++)
 	{
-		[query addChild:[streamhosts objectAtIndex:i]];
+    [query addChild:streamhosts[i]];
 	}
 	
 	XMPPIQ *iq = [XMPPIQ iqWithType:@"set" to:jid elementID:uuid child:query];
 	
 	[xmppStream sendElement:iq];
-    NSLog(@"sendRequest 只有发起者才发送请求 iq : %@",iq);
-
+	
 	// Update state
 	state = STATE_REQUEST_SENT;
 }
@@ -508,7 +498,7 @@ static NSMutableArray *proxyCandidates;
 	XMPPIQ *iq = [XMPPIQ iqWithType:@"set" to:proxyJID elementID:uuid child:query];
 	
 	[xmppStream sendElement:iq];
-	NSLog(@"sendActivate : %@",iq);
+	
 	// Update state
 	state = STATE_ACTIVATE_SENT;
 }
@@ -548,13 +538,12 @@ static NSMutableArray *proxyCandidates;
 {
 	// Disco queries (sent to jabber server) use id=discoUUID
 	// P2P queries (sent to other Mojo app) use id=uuid
-	NSLog(@"didReceiveIQ in turn socket");
+	
 	if (state <= STATE_PROXY_DISCO_ADDR)
 	{
 		if (![discoUUID isEqualToString:[iq elementID]])
 		{
 			// Doesn't apply to us, or is a delayed response that we've decided to ignore
-            NSLog(@"// Doesn't apply to us, or is a delayed response that we've decided to ignore");
 			return NO;
 		}
 	}
@@ -563,7 +552,6 @@ static NSMutableArray *proxyCandidates;
 		if (![uuid isEqualToString:[iq elementID]])
 		{
 			// Doesn't apply to us
-            NSLog(@"// Doesn't apply to us");
 			return NO;
 		}
 	}
@@ -596,7 +584,6 @@ static NSMutableArray *proxyCandidates;
 
 - (void)processDiscoItemsResponse:(XMPPIQ *)iq
 {
-    NSLog(@"processDiscoItemsResponse : %@",iq);
 	XMPPLogTrace();
 	
 	// We queried the current proxy candidate for all known JIDs in it's disco list.
@@ -616,7 +603,7 @@ static NSMutableArray *proxyCandidates;
 	NSUInteger i;
 	for(i = 0; i < [items count]; i++)
 	{
-		NSString *itemJidStr = [[[items objectAtIndex:i] attributeForName:@"jid"] stringValue];
+		NSString *itemJidStr = [[items[i] attributeForName:@"jid"] stringValue];
 		XMPPJID *itemJid = [XMPPJID jidWithString:itemJidStr];
 		
 		if(itemJid)
@@ -624,13 +611,12 @@ static NSMutableArray *proxyCandidates;
 			[candidateJIDs addObject:itemJid];
 		}
 	}
-	NSLog(@"candidate jids : %@",candidateJIDs);
+	
 	[self queryCandidateJIDs];
 }
 
 - (void)processDiscoInfoResponse:(XMPPIQ *)iq
 {
-    NSLog(@"processDiscoInfoResponse iq : %@",iq);
 	XMPPLogTrace();
 	
 	// We queried a potential proxy server to see if it was indeed a proxy.
@@ -650,7 +636,7 @@ static NSMutableArray *proxyCandidates;
 	NSUInteger i;
 	for(i = 0; i < [identities count] && !found; i++)
 	{
-		NSXMLElement *identity = [identities objectAtIndex:i];
+		NSXMLElement *identity = identities[i];
 		
 		NSString *category = [[identity attributeForName:@"category"] stringValue];
 		NSString *type = [[identity attributeForName:@"type"] stringValue];
@@ -677,7 +663,7 @@ static NSMutableArray *proxyCandidates;
 		// We could ignore the 404 error, and try to connect anyways,
 		// but this would be useless because we'd be unable to activate the stream later.
 		
-		XMPPJID *candidateJID = [candidateJIDs objectAtIndex:candidateJIDIndex];
+		XMPPJID *candidateJID = candidateJIDs[candidateJIDIndex];
 		
 		// So the service was not a useable proxy service, or will not allow us to use its proxy.
 		// 
@@ -701,7 +687,6 @@ static NSMutableArray *proxyCandidates;
 
 - (void)processDiscoAddressResponse:(XMPPIQ *)iq
 {
-    NSLog(@"processDiscoAddressResponse iq : %@",iq);
 	XMPPLogTrace();
 	
 	// We queried a proxy for its public IP and port.
@@ -733,7 +718,6 @@ static NSMutableArray *proxyCandidates;
 
 - (void)processRequestResponse:(XMPPIQ *)iq
 {
-    NSLog(@"processRequestResponse iq : %@",iq);
 	XMPPLogTrace();
 	
 	// Target has replied - hopefully they've been able to connect to one of the streamhosts
@@ -747,7 +731,7 @@ static NSMutableArray *proxyCandidates;
 	NSUInteger i;
 	for(i = 0; i < [streamhosts count] && !found; i++)
 	{
-		NSXMLElement *streamhost = [streamhosts objectAtIndex:i];
+		NSXMLElement *streamhost = streamhosts[i];
 		
 		NSString *streamhostJID = [[streamhost attributeForName:@"jid"] stringValue];
 		
@@ -825,8 +809,6 @@ static NSMutableArray *proxyCandidates;
 **/
 - (void)queryProxyCandidates
 {
-    NSLog(@"queryProxyCandidates");
-    NSLog(@"遍历代理服务器候选数组，判断是否支持协议65，看哪一个是代理，并能返回公用的IP和port,proxyCandidates: %@",proxyCandidates);
 	XMPPLogTrace();
 	
 	// Prepare the streamhosts array, which will hold all of our results
@@ -843,8 +825,6 @@ static NSMutableArray *proxyCandidates;
 **/
 - (void)queryNextProxyCandidate
 {
-    NSLog(@"queryNextProxyCandidate streamhosts ： %@",streamhosts);
-    NSLog(@"and proxyCandidates : %@",proxyCandidates);
 	XMPPLogTrace();
 	
 	// Update state
@@ -857,39 +837,34 @@ static NSMutableArray *proxyCandidates;
 	
 	if ([streamhosts count] < 2)
 	{
-        NSLog(@"proxyCandidateIndex : %d",proxyCandidateIndex);
 		while ((proxyCandidateJID == nil) && (++proxyCandidateIndex < [proxyCandidates count]))
 		{
-            NSLog(@"while");
-			NSString *proxyCandidate = [proxyCandidates objectAtIndex:proxyCandidateIndex];
+			NSString *proxyCandidate = proxyCandidates[proxyCandidateIndex];
 			proxyCandidateJID = [XMPPJID jidWithString:proxyCandidate];
 			
 			if (proxyCandidateJID == nil)
 			{
 				XMPPLogWarn(@"%@: Invalid proxy candidate '%@', not a valid JID", THIS_FILE, proxyCandidate);
-                NSLog(@"%@: Invalid proxy candidate '%@', not a valid JID", THIS_FILE, proxyCandidate);
 			}
 		}
 	}
+	
 	if (proxyCandidateJID)
 	{
-        NSLog(@"proxyCandidateJID = %@",proxyCandidateJID);
 		[self updateDiscoUUID];
 		
 		NSXMLElement *query = [NSXMLElement elementWithName:@"query" xmlns:@"http://jabber.org/protocol/disco#items"];
 		
 		XMPPIQ *iq = [XMPPIQ iqWithType:@"get" to:proxyCandidateJID elementID:discoUUID child:query];
-		NSLog(@"send element iq : %@",iq);
+		
 		[xmppStream sendElement:iq];
 		
 		[self setupDiscoTimerForDiscoItems];
 	}
 	else
 	{
-        NSLog(@"proxyCandidateJID 为空");
 		if ([streamhosts count] > 0)
 		{
-            NSLog(@"如果streamhost.count  > 0 send request");
 			// We've got a list of potential proxy servers to send to the initiator
 			
 			XMPPLogVerbose(@"%@: Streamhosts: \n%@", THIS_FILE, streamhosts);
@@ -898,7 +873,6 @@ static NSMutableArray *proxyCandidates;
 		}
 		else
 		{
-            NSLog(@"如果streamhost.cout < 0 则失败 No proxies found");
 			// We were unable to find a single proxy server from our list
 			
 			XMPPLogVerbose(@"%@: No proxies found", THIS_FILE);
@@ -922,7 +896,7 @@ static NSMutableArray *proxyCandidates;
 	NSUInteger i;
 	for (i = 0; i < [candidateJIDs count]; i++)
 	{
-		XMPPJID *candidateJID = [candidateJIDs objectAtIndex:i];
+		XMPPJID *candidateJID = candidateJIDs[i];
 		
 		NSRange proxyRange = [[candidateJID domain] rangeOfString:@"proxy" options:NSCaseInsensitiveSearch];
 		
@@ -946,7 +920,6 @@ static NSMutableArray *proxyCandidates;
 **/
 - (void)queryNextCandidateJID
 {
-    NSLog(@"queryNextCandidateJID");
 	XMPPLogTrace();
 	
 	// Update state
@@ -957,7 +930,7 @@ static NSMutableArray *proxyCandidates;
 	{
 		[self updateDiscoUUID];
 		
-		XMPPJID *candidateJID = [candidateJIDs objectAtIndex:candidateJIDIndex];
+		XMPPJID *candidateJID = candidateJIDs[candidateJIDIndex];
 		
 		NSXMLElement *query = [NSXMLElement elementWithName:@"query" xmlns:@"http://jabber.org/protocol/disco#info"];
 		
@@ -980,7 +953,6 @@ static NSMutableArray *proxyCandidates;
 **/
 - (void)queryProxyAddress
 {
-    NSLog(@"queryProxyAddress");
 	XMPPLogTrace();
 	
 	// Update state
@@ -988,7 +960,7 @@ static NSMutableArray *proxyCandidates;
 	
 	[self updateDiscoUUID];
 	
-	XMPPJID *candidateJID = [candidateJIDs objectAtIndex:candidateJIDIndex];
+	XMPPJID *candidateJID = candidateJIDs[candidateJIDIndex];
 	
 	NSXMLElement *query = [NSXMLElement elementWithName:@"query" xmlns:@"http://jabber.org/protocol/bytestreams"];
 	
@@ -1012,7 +984,6 @@ static NSMutableArray *proxyCandidates;
 	
 	// Start trying to connect to each streamhost in order
 	streamhostIndex = -1;
-    NSLog(@"targetConnect");
 	[self targetNextConnect];
 }
 
@@ -1021,11 +992,9 @@ static NSMutableArray *proxyCandidates;
 	XMPPLogTrace();
 	
 	streamhostIndex++;
-    NSLog(@"targetNextConnect  streamhostIndex : %d----- streamhosts: %@",streamhostIndex,streamhosts);
-
 	if(streamhostIndex < [streamhosts count])
 	{
-		NSXMLElement *streamhost = [streamhosts objectAtIndex:streamhostIndex];
+		NSXMLElement *streamhost = streamhosts[streamhostIndex];
 		
 		
 		proxyJID = [XMPPJID jidWithString:[[streamhost attributeForName:@"jid"] stringValue]];
@@ -1045,17 +1014,14 @@ static NSMutableArray *proxyCandidates;
 		else
 		{
 			NSAssert([asyncSocket isDisconnected], @"Expecting the socket to be disconnected at this point...");
-            NSLog(@"%@",[asyncSocket isDisconnected]? @"Expecting the socket to be disconnected at this point...":@"connected");
 		}
 		
 		XMPPLogVerbose(@"TURNSocket: targetNextConnect: %@(%@:%hu)", [proxyJID full], proxyHost, proxyPort);
-        NSLog(@"TURNSocket: targetNextConnect: %@(%@:%hu)", [proxyJID full], proxyHost, proxyPort);
 		
 		NSError *err = nil;
 		if (![asyncSocket connectToHost:proxyHost onPort:proxyPort withTimeout:TIMEOUT_CONNECT error:&err])
 		{
 			XMPPLogError(@"TURNSocket: targetNextConnect: err: %@", err);
-            NSLog(@"TURNSocket: targetNextConnect: err: %@", err);
 			[self targetNextConnect];
 		}
 	}
@@ -1068,19 +1034,16 @@ static NSMutableArray *proxyCandidates;
 
 - (void)initiatorConnect
 {
-    NSLog(@"initiatorConnect");
 	NSAssert(asyncSocket == nil, @"Expecting asyncSocket to be nil");
-    NSLog(asyncSocket == nil? @"Expecting asyncSocket to be nil":@"have one");
 	
 	asyncSocket = [[GCDAsyncSocket alloc] initWithDelegate:self delegateQueue:turnQueue];
 	
 	XMPPLogVerbose(@"TURNSocket: initiatorConnect: %@(%@:%hu)", [proxyJID full], proxyHost, proxyPort);
-	NSLog(@"TURNSocket: initiatorConnect: %@(%@:%hu)", [proxyJID full], proxyHost, proxyPort);
+	
 	NSError *err = nil;
 	if (![asyncSocket connectToHost:proxyHost onPort:proxyPort withTimeout:TIMEOUT_CONNECT error:&err])
 	{
 		XMPPLogError(@"TURNSocket: initiatorConnect: err: %@", err);
-        NSLog(@"TURNSocket: initiatorConnect: err: %@", err);
 		[self fail];
 	}
 }
@@ -1095,7 +1058,6 @@ static NSMutableArray *proxyCandidates;
 **/
 - (void)socksOpen
 {
-    NSLog(@"socksOpen");
 	XMPPLogTrace();
 	
 	//      +-----+-----------+---------+
@@ -1145,7 +1107,6 @@ static NSMutableArray *proxyCandidates;
 **/
 - (void)socksConnect
 {
-    NSLog(@"socksConnect");
 	XMPPLogTrace();
 	
 	XMPPJID *myJID = [xmppStream myJID];
@@ -1159,8 +1120,8 @@ static NSMutableArray *proxyCandidates;
 	XMPPJID *targetJID    = isClient ? jid   : myJID;
 	
 	NSString *hashMe = [NSString stringWithFormat:@"%@%@%@", uuid, [initiatorJID full], [targetJID full]];
-	NSData *hashRaw = [[hashMe dataUsingEncoding:NSUTF8StringEncoding] sha1Digest];
-	NSData *hash = [[hashRaw hexStringValue] dataUsingEncoding:NSUTF8StringEncoding];
+	NSData *hashRaw = [[hashMe dataUsingEncoding:NSUTF8StringEncoding] xmpp_sha1Digest];
+	NSData *hash = [[hashRaw xmpp_hexStringValue] dataUsingEncoding:NSUTF8StringEncoding];
 	
 	XMPPLogVerbose(@"TURNSocket: hashMe : %@", hashMe);
 	XMPPLogVerbose(@"TURNSocket: hashRaw: %@", hashRaw);
@@ -1206,7 +1167,6 @@ static NSMutableArray *proxyCandidates;
 	
 	NSData *data = [NSData dataWithBytesNoCopy:byteBuffer length:byteBufferLength freeWhenDone:YES];
 	XMPPLogVerbose(@"TURNSocket: SOCKS_CONNECT: %@", data);
-    NSLog(@"TURNSocket: SOCKS_CONNECT: %@", data);
 	
 	[asyncSocket writeData:data withTimeout:-1 tag:SOCKS_CONNECT];
 	
@@ -1244,19 +1204,16 @@ static NSMutableArray *proxyCandidates;
 	[self socksOpen];
 }
 
-
 - (void)socket:(GCDAsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag
 {
-    NSLog(@"didReadData : %@",data);
 	XMPPLogTrace();
 	
 	if (tag == SOCKS_OPEN)
 	{
 		// See socksOpen method for socks reply format
 		
-		UInt8 ver = [NSNumber extractUInt8FromData:data atOffset:0];
-		UInt8 mtd = [NSNumber extractUInt8FromData:data atOffset:1];
-        NSLog(@"TURNSocket: SOCKS_OPEN: ver(%o) mtd(%o)", ver, mtd);
+		UInt8 ver = [NSNumber xmpp_extractUInt8FromData:data atOffset:0];
+		UInt8 mtd = [NSNumber xmpp_extractUInt8FromData:data atOffset:1];
 		
 		XMPPLogVerbose(@"TURNSocket: SOCKS_OPEN: ver(%o) mtd(%o)", ver, mtd);
 		
@@ -1277,10 +1234,9 @@ static NSMutableArray *proxyCandidates;
 		
 		XMPPLogVerbose(@"TURNSocket: SOCKS_CONNECT_REPLY_1: %@", data);
 		
-		UInt8 ver = [NSNumber extractUInt8FromData:data atOffset:0];
-		UInt8 rep = [NSNumber extractUInt8FromData:data atOffset:1];
-        NSLog(@"TURNSocket: SOCKS_CONNECT_REPLY_1: ver(%o) rep(%o)", ver, rep);
-
+		UInt8 ver = [NSNumber xmpp_extractUInt8FromData:data atOffset:0];
+		UInt8 rep = [NSNumber xmpp_extractUInt8FromData:data atOffset:1];
+		
 		XMPPLogVerbose(@"TURNSocket: SOCKS_CONNECT_REPLY_1: ver(%o) rep(%o)", ver, rep);
 		
 		if(ver == 5 && rep == 0)
@@ -1294,11 +1250,11 @@ static NSMutableArray *proxyCandidates;
 			// 
 			// However, some servers don't follow the protocol, and send a atyp value of 0.
 			
-			UInt8 atyp = [NSNumber extractUInt8FromData:data atOffset:3];
+			UInt8 atyp = [NSNumber xmpp_extractUInt8FromData:data atOffset:3];
 			
 			if (atyp == 3)
 			{
-				UInt8 addrLength = [NSNumber extractUInt8FromData:data atOffset:4];
+				UInt8 addrLength = [NSNumber xmpp_extractUInt8FromData:data atOffset:4];
 				UInt8 portLength = 2;
 				
 				XMPPLogVerbose(@"TURNSocket: addrLength: %o", addrLength);
@@ -1342,9 +1298,6 @@ static NSMutableArray *proxyCandidates;
 			[self succeed];
 		}
 	}
-//    else{
-//        NSLog(@"didReadData data : %@",data);
-//    }
 }
 
 - (void)socketDidDisconnect:(GCDAsyncSocket *)sock withError:(NSError *)err
@@ -1388,7 +1341,6 @@ static NSMutableArray *proxyCandidates;
 
 - (void)setupDiscoTimerForDiscoItems
 {
-    NSLog(@"setupDiscoTimerForDiscoItems");
 	XMPPLogTrace();
 	
 	[self setupDiscoTimer:TIMEOUT_DISCO_ITEMS];
@@ -1500,7 +1452,6 @@ static NSMutableArray *proxyCandidates;
 
 - (void)succeed
 {
-    NSLog(@"succeed");
 	NSAssert(dispatch_get_specific(turnQueueTag), @"Invoked on incorrect queue");
 	
 	XMPPLogTrace();
@@ -1515,7 +1466,6 @@ static NSMutableArray *proxyCandidates;
 		
 		if ([delegate respondsToSelector:@selector(turnSocket:didSucceed:)])
 		{
-            NSLog(@"turn socket did succeed");
 			[delegate turnSocket:self didSucceed:asyncSocket];
 		}
 	}});
