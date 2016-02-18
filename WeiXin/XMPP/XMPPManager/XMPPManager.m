@@ -60,6 +60,15 @@ static XMPPManager *xmppManager = nil;
     self.xmppRoster.autoFetchRoster = YES;
     self.xmppRoster.autoAcceptKnownPresenceSubscriptionRequests = YES;
     [self.xmppRoster activate:self.xmppStream];
+    
+    // 设置xmpp文件接受服务
+    self.incomingFileTransfer = [[XMPPIncomingFileTransfer alloc] initWithDispatchQueue:dispatch_get_main_queue()];
+    
+    self.incomingFileTransfer.autoAcceptFileTransfers = YES; // 自动接受文件
+    
+    [self.incomingFileTransfer activate:self.xmppStream];
+    [self.incomingFileTransfer addDelegate:self delegateQueue:dispatch_get_main_queue()];
+
 }
 
 /**
@@ -176,7 +185,7 @@ static XMPPManager *xmppManager = nil;
 
 - (void)fileSendingWithUserName:(NSString *)name
 {
-    XMPPJID *toJID    = [XMPPJID jidWithUser:name domain:kServerName resource:@"qipu"];
+    XMPPJID *toJID    = [XMPPJID jidWithUser:name domain:kServerName resource:kResourceName];
     NSData  *sendData = [@"Hello" dataUsingEncoding:NSUTF8StringEncoding];
     
     self.outgoingFileTransfer = [[XMPPOutgoingFileTransfer alloc] initWithDispatchQueue:dispatch_get_main_queue()];
@@ -189,16 +198,6 @@ static XMPPManager *xmppManager = nil;
                             toRecipient:toJID
                             description:@"sendData"
                                   error:nil];
-}
-
-- (void)fileReceivingWithIncoming
-{
-    self.incomingFileTransfer = [[XMPPIncomingFileTransfer alloc] initWithDispatchQueue:dispatch_get_main_queue()];
-    
-    self.incomingFileTransfer.autoAcceptFileTransfers = YES;
-    
-    [self.incomingFileTransfer activate:self.xmppStream];
-    [self.incomingFileTransfer addDelegate:self delegateQueue:dispatch_get_main_queue()];
 }
 
 #pragma mark -
@@ -289,11 +288,6 @@ static XMPPManager *xmppManager = nil;
 - (BOOL)xmppStream:(XMPPStream *)sender didReceiveIQ:(XMPPIQ *)iq
 {
     PRETTY_LOG(iq);
-    
-    if ([iq isGetIQ]) {
-    if ([[iq to].user isEqualToString:@"huangjiasha"]) {
-        [self fileReceivingWithIncoming];
-    }}
     
     return YES;
 }

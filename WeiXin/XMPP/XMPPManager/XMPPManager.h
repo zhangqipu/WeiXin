@@ -86,11 +86,6 @@ extern NSString *const XMPPDidReceiveMessageNotification;
 - (void)sendMessageWithText:(NSString *)text;
 
 /**
- *  接收文件
- */
-- (void)fileReceivingWithIncoming;
-
-/**
  *  发送文件
  */
 - (void)fileSendingWithUserName:(NSString *)name;

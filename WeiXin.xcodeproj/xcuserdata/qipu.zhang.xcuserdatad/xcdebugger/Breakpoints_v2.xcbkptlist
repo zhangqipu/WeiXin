@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WeiXin/XMPP/XMPPManager/XMPPManager.m"
-            timestampString = "477476471.966775"
+            timestampString = "477479498.078393"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "396"
-            endingLineNumber = "396"
+            startingLineNumber = "390"
+            endingLineNumber = "390"
             landmarkName = "-xmppIncomingFileTransfer:didSucceedWithData:named:"
             landmarkType = "5">
          </BreakpointContent>
@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WeiXin/XMPP/XMPPManager/XMPPManager.m"
-            timestampString = "477476471.966775"
+            timestampString = "477479498.078393"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "383"
-            endingLineNumber = "383"
+            startingLineNumber = "377"
+            endingLineNumber = "377"
             landmarkName = "-xmppIncomingFileTransfer:didFailWithError:"
             landmarkType = "5">
          </BreakpointContent>
@@ -42,12 +42,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "WeiXin/XMPP/XMPPManager/XMPPManager.m"
-            timestampString = "477476471.966775"
+            timestampString = "477479498.078393"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "295"
-            endingLineNumber = "295"
-            landmarkName = "-xmppStream:didReceiveIQ:"
+            startingLineNumber = "383"
+            endingLineNumber = "383"
+            landmarkName = "-xmppIncomingFileTransfer:didReceiveSIOffer:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
