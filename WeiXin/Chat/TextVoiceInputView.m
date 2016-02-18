@@ -130,13 +130,11 @@
     
 }
 
-- (BOOL)textViewShouldBeginEditing:(UITextView *)textView
+- (void)textViewDidBeginEditing:(UITextView *)textView
 {
-    if (self.textViewShouldBeginEditingBlock) {
-        self.textViewShouldBeginEditingBlock(textView);
+    if (self.textViewDidBeginEditinggBlock) {
+        self.textViewDidBeginEditinggBlock(textView);
     }
-    
-    return YES;
 }
 
 /*

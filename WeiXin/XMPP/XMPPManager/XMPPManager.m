@@ -186,7 +186,8 @@ static XMPPManager *xmppManager = nil;
 - (void)fileSendingWithUserName:(NSString *)name
 {
     XMPPJID *toJID    = [XMPPJID jidWithUser:name domain:kServerName resource:kResourceName];
-    NSData  *sendData = [@"Hello" dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *path    = [[NSBundle mainBundle] pathForResource:@"Default" ofType:@"png"];
+    NSData  *sendData = [NSData dataWithContentsOfFile:path];
     
     self.outgoingFileTransfer = [[XMPPOutgoingFileTransfer alloc] initWithDispatchQueue:dispatch_get_main_queue()];
     
@@ -194,7 +195,7 @@ static XMPPManager *xmppManager = nil;
     [self.outgoingFileTransfer addDelegate:self delegateQueue:dispatch_get_main_queue()];
     
     [self.outgoingFileTransfer sendData:sendData
-                                  named:@"sendData"
+                                  named:@"sendData.png"
                             toRecipient:toJID
                             description:@"sendData"
                                   error:nil];
@@ -380,14 +381,19 @@ static XMPPManager *xmppManager = nil;
 - (void)xmppIncomingFileTransfer:(XMPPIncomingFileTransfer *)sender
                didReceiveSIOffer:(XMPPIQ *)offer
 {
-    
+    //弹出一个是否接收的询问框
+    //    [self.xmppIncomingFileTransfer acceptSIOffer:offer];
 }
 
 - (void)xmppIncomingFileTransfer:(XMPPIncomingFileTransfer *)sender
               didSucceedWithData:(NSData *)data
                            named:(NSString *)name
 {
+    NSString *savedPath = [NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), name];
     
+    [data writeToFile:savedPath atomically:YES];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:XMPPDidReceiveMessageNotification object:savedPath];
 }
 
 @end

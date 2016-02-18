@@ -374,7 +374,11 @@ NSString *ChatImageCellId = @"ChatImageCellId";
         return ;
     }
     
-    [self insertMessageWithType:MessageTypeText andContent:content isLeft:YES];
+    if ([content hasPrefix:NSTemporaryDirectory()]) {
+        [self insertMessageWithType:MessageTypeImage andContent:content isLeft:YES];
+    } else {
+        [self insertMessageWithType:MessageTypeText andContent:content isLeft:YES];
+    }
     
     [self.tableView reloadData];
     [self scrollToBottom];

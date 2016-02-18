@@ -79,7 +79,7 @@
         }
     };
     
-    inputView.textViewShouldBeginEditingBlock = ^(UITextView *textView) {
+    inputView.textViewDidBeginEditinggBlock = ^(UITextView *textView) {
         if (self.inputToolBarDelegate
             && [self.inputToolBarDelegate respondsToSelector:@selector(inputToolBarBeginTextInput:)]) {
             [self.inputToolBarDelegate inputToolBarBeginTextInput:self];

@@ -9,7 +9,9 @@
 #import "QPChatStateMachine.h"
 #import "TextVoiceInputView.h"
 
-#define kKeyboardHeight (([UIScreen mainScreen].bounds.size.height) * 216 / 568)
+//#define kKeyboardHeight (([UIScreen mainScreen].bounds.size.height) * 216 / 568)
+
+static CGFloat kKeyboardHeight = 216.0f;
 
 @implementation QPChatStateMachine
 
@@ -17,6 +19,8 @@
 {
     if (self = [super init]) {
         self.chatController = chatController;
+        
+        [self registKeyboardNotification];
     }
     
     return self;
@@ -150,6 +154,22 @@
     
     [UIView commitAnimations];
 
+}
+
+- (void)registKeyboardNotification
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+}
+
+- (void)keyboardWillShow:(NSNotification *)notification
+{
+    NSDictionary *info = [notification userInfo];
+    CGSize kbSize      = [[info objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
+    
+    kKeyboardHeight    = kbSize.height;
 }
 
 @end

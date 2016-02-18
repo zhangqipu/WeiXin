@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 typedef void(^SendTextBlock)(NSString *text);
-typedef void(^TextViewShouldBeginEditingBlock)(UITextView *textView);
+typedef void(^TextViewDidBeginEditinggBlock)(UITextView *textView);
 
 @interface TextVoiceInputView : UIView <UITextViewDelegate>
 
@@ -24,7 +24,7 @@ typedef void(^TextViewShouldBeginEditingBlock)(UITextView *textView);
 // 发送文字Block
 @property (nonatomic, copy)   SendTextBlock sendTextBlock;
 
-@property (nonatomic, copy) TextViewShouldBeginEditingBlock textViewShouldBeginEditingBlock;
+@property (nonatomic, copy) TextViewDidBeginEditinggBlock textViewDidBeginEditinggBlock;
 
 // 调整输入框录音按钮的显示隐藏
 - (void)changeState;

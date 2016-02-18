@@ -18,8 +18,8 @@
     [super setupContentWithModel:model];
     
     // 先清除气泡图片数据，将BubbleImageView作为消息图片展示的载体，
-    self.bubbleImageView.image = nil;
-    self.bubbleImageView.image = [UIImage imageNamed: model.content];
+//    self.bubbleImageView.image = nil;
+    self.bubbleImageView.image = [UIImage imageWithContentsOfFile:model.content];
     self.bubbleImageView.layer.borderColor = kImageViewBorderColor.CGColor;
     self.bubbleImageView.layer.borderWidth = 1;
     self.bubbleImageView.layer.masksToBounds = YES;
